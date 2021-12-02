@@ -10,18 +10,9 @@ fun main() {
 
 private fun task1(input: List<Int>) {
     var depthsGreater = 0
-    var previousDepth = -1
-    for (depth in input) {
-        if (previousDepth == -1) {
-            previousDepth = depth
-            continue
-        }
 
-        if (depth > previousDepth) {
-            depthsGreater++
-        }
-
-        previousDepth = depth
+    for(i in 0 until input.lastIndex) {
+        if (input[i + 1] > input[i]) depthsGreater++
     }
 
     println("task1 = $depthsGreater")
