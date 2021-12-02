@@ -1,9 +1,7 @@
-package day01
-
 import util.Utils
 
 fun main() {
-    val input = Utils().readFileAsIntList("day01/input.txt")
+    val input = Utils().readFileAsIntList("input_day01.txt")
     task1(input) // 1766
     task2(input) // 1797
 }
