@@ -6,7 +6,7 @@ fun main() {
     task2(input) // 1604592846
 }
 
-fun task1(input: List<Pair<String, Int>>) {
+private fun task1(input: List<Pair<String, Int>>) {
     var posX = 0
     var depth = 0
     for (pair in input) {
