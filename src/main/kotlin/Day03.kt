@@ -6,7 +6,7 @@ fun main() {
     task2(input) // 2372923
 }
 
-fun task1(input: List<String>) {
+private fun task1(input: List<String>) {
     val lengthRow = input[0].length
     var gamma = ""
     var epsilon = ""
@@ -30,7 +30,7 @@ fun task1(input: List<String>) {
     println("task1 = ${gamma.toInt(2) * epsilon.toInt(2)}")
 }
 
-fun task2(input: List<String>) {
+private fun task2(input: List<String>) {
     val oxygenRating = reduceList(input, true)
     val co2Rating = reduceList(input, false)
 
