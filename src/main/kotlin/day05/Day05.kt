@@ -7,7 +7,8 @@ fun main() {
     val pointPairs = createPointPairs(input)
     val currentDay = Day05()
 
-    currentDay.task1(pointPairs)
+    currentDay.task1(pointPairs) // 7473
+    currentDay.task2(pointPairs) // 24164
 }
 
 
@@ -33,10 +34,24 @@ class Day05 {
         println("task1 = ${markedPoints.filter { entry -> entry.value > 1 }.count()}")
     }
 
+    fun task2(input: MutableList<Pair<Point, Point>>) {
+        val markedPoints = mutableMapOf<Point, Int>()
+        for (element in input) {
+            val linePoints = getLinePointsForTwoPoints(element)
+            for (linePoint in linePoints) {
+                markedPoints.putIfAbsent(linePoint, 0)
+                markedPoints[linePoint] = markedPoints[linePoint]!! + 1
+            }
+        }
+
+        println("task2 = ${markedPoints.filter { entry -> entry.value > 1 }.count()}")
+    }
+
     fun getLinePointsForTwoPoints(points: Pair<Point, Point>): List<Point> {
         val lineOfPoints = mutableListOf<Point>()
 
         if (points.first.x == points.second.x) {
+            // vertical line
             if (points.first.y < points.second.y) {
                 for (i in points.first.y..points.second.y) {
                     lineOfPoints.add(Point(points.first.x, i))
@@ -47,6 +62,7 @@ class Day05 {
                 }
             }
         } else if (points.first.y == points.second.y) {
+            // horizontal line
             if (points.first.x < points.second.x) {
                 for (i in points.first.x..points.second.x) {
                     lineOfPoints.add(Point(i, points.first.y))
@@ -57,7 +73,47 @@ class Day05 {
                 }
             }
         } else {
-            throw IllegalStateException("neither x nor y are the same")
+            // diagonal line
+            // 8,5 | 3,10 oder 3,10 | 8,5
+            // 8,5 | 7,6 | 6,7 | 5,8 | 4,9 | 3,10
+
+            if (points.first.x < points.second.x) {
+                if (points.first.y < points.second.y) {
+                    // 0,0 | 3,3
+                    var startY = points.first.y
+                    lineOfPoints.add(points.first)
+                    lineOfPoints.add(points.second)
+                    for (i in points.first.x + 1 until points.second.x) {
+                        lineOfPoints.add(Point(i, ++startY))
+                    }
+                } else {
+                    // 0,3 | 3,0
+                    var firstY = points.first.y
+                    lineOfPoints.add(points.first)
+                    lineOfPoints.add(points.second)
+                    for (i in points.first.x + 1 until points.second.x) {
+                        lineOfPoints.add(Point(i, --firstY))
+                    }
+                }
+            } else {
+                if (points.first.y < points.second.y) {
+                    // 3,0 | 0,3
+                    var startY = points.second.y
+                    lineOfPoints.add(points.first)
+                    lineOfPoints.add(points.second)
+                    for (i in points.second.x + 1 until points.first.x) {
+                        lineOfPoints.add(Point(i, --startY))
+                    }
+                } else {
+                    // 3,3 | 0,0
+                    var startY = points.second.y
+                    lineOfPoints.add(points.first)
+                    lineOfPoints.add(points.second)
+                    for (i in points.second.x + 1 until points.first.x) {
+                        lineOfPoints.add(Point(i, ++startY))
+                    }
+                }
+            }
         }
 
         return lineOfPoints
