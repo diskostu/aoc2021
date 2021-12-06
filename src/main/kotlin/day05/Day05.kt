@@ -3,38 +3,22 @@ package day05
 import util.Utils
 
 fun main() {
-    val input = Utils().readFileAsStringList("input_day05.txt")
-    val pointPairs = createPointPairs(input)
     val currentDay = Day05()
+    val input = Utils().readFileAsStringList("input_day05.txt")
 
-    currentDay.task1(pointPairs) // 7473
-    currentDay.task2(pointPairs) // 24164
+    val completeList = createPointPairs(input)
+    val filteredList = completeList
+        .filter { pair -> pair.first.x == pair.second.x || pair.first.y == pair.second.y }
+        .toList()
+
+    println("task1: ${currentDay.solveTask(filteredList)}") // 7473
+    println("task2: ${currentDay.solveTask(completeList)}") // 24164
 }
 
 
 class Day05 {
 
-    fun task1(input: MutableList<Pair<Point, Point>>) {
-        val filteredList = input
-            .filter { pair -> pair.first.x == pair.second.x || pair.first.y == pair.second.y }
-            .toList()
-
-        println("input size = ${input.size}")
-        println("filtered size = ${filteredList.size}")
-
-        val markedPoints = mutableMapOf<Point, Int>()
-        for (element in filteredList) {
-            val linePoints = getLinePointsForTwoPoints(element)
-            for (linePoint in linePoints) {
-                markedPoints.putIfAbsent(linePoint, 0)
-                markedPoints[linePoint] = markedPoints[linePoint]!! + 1
-            }
-        }
-
-        println("task1 = ${markedPoints.filter { entry -> entry.value > 1 }.count()}")
-    }
-
-    fun task2(input: MutableList<Pair<Point, Point>>) {
+    fun solveTask(input: List<Pair<Point, Point>>): Int {
         val markedPoints = mutableMapOf<Point, Int>()
         for (element in input) {
             val linePoints = getLinePointsForTwoPoints(element)
@@ -44,7 +28,7 @@ class Day05 {
             }
         }
 
-        println("task2 = ${markedPoints.filter { entry -> entry.value > 1 }.count()}")
+        return markedPoints.filter { entry -> entry.value > 1 }.count()
     }
 
     fun getLinePointsForTwoPoints(points: Pair<Point, Point>): List<Point> {
@@ -120,7 +104,7 @@ class Day05 {
     }
 }
 
-private fun createPointPairs(input: List<String>): MutableList<Pair<Point, Point>> {
+private fun createPointPairs(input: List<String>): List<Pair<Point, Point>> {
     val pointPairs = mutableListOf<Pair<Point, Point>>()
     for (line in input) {
         val split = line.split(" -> ")
@@ -130,5 +114,6 @@ private fun createPointPairs(input: List<String>): MutableList<Pair<Point, Point
         val y2 = split[1].split(",")[1].trim().toInt()
         pointPairs.add(Pair(Point(x1, y1), Point(x2, y2)))
     }
-    return pointPairs
+
+    return pointPairs.toList()
 }
