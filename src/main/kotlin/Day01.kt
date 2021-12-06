@@ -1,7 +1,7 @@
 import util.Utils
 
 fun main() {
-    val input = Utils().readFileAsIntList("input_day01.txt")
+    val input = Utils().readFileAsIntListLineBreaks("input_day01.txt")
     task1(input) // 1766
     task2(input) // 1797
 }
