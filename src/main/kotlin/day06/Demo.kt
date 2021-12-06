@@ -1,20 +1,16 @@
 package day06
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+fun main() {
+    val inputList = listOf(1, 2, 3, 4, 1, 2, 3, 1, 2)
 
-suspend fun main() {
-    lala()
-}
+    val variants = MutableList(9) { index ->
+        inputList.count { it == index }
+    }
+    val variants2 = inputList
+        .groupingBy { it }
+        .eachCount().toMutableMap()
 
-suspend fun lala() {
-    coroutineScope { // limits the scope of concurrency
-        (0..10).map { // is a shorter way to write IntRange(0, 10)
-            async(Dispatchers.IO) { // async means "concurrently", context goes here
-                println(it)
-            }
-        }.awaitAll() // waits all of them
-    } // if any task crashes -- this scope ends with exception
+    println("variants = $variants")
+    println("variants2 = $variants2")
+
 }

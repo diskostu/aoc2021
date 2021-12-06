@@ -5,46 +5,50 @@ import util.Utils
 fun main() {
     val currentDay = Day06()
     val input = Utils().readFileAsIntListCommaSeparated("input_day06.txt")
-    val lanternFishes = input.map { Lanternfish(it) }.toList()
 
-    println("task1 = ${currentDay.task1(lanternFishes, 80)}") // 365131
+    println("task 1 = ${currentDay.simulate(input, 80)}")
+    println("task 2 = ${currentDay.simulate(input, 256)}")
 }
 
 
 class Day06 {
 
-    fun task1(fishes: List<Lanternfish>, days: Int): Int {
-        // create mutable list based on the input
-        var mutableFishes = fishes.toMutableList()
-
-//        println("initial state: ${mutablesFishes.size} fishes")
-//        println("$mutablesFishes")
-
-        val startTimeTotal = System.currentTimeMillis()
-
-        for (i in 1..days) {
-            //println("--------------- new day ------------")
-            val startTimeDay = System.currentTimeMillis()
-            val mutableFishesWithNewBorns = mutableFishes.toMutableList()
-            //println("duplicating finished: ${System.currentTimeMillis() - startTimeDay} ms")
-
-            for (fish in mutableFishes) {
-                if (fish.day == 0) {
-                    mutableFishesWithNewBorns.add(Lanternfish())
-                    fish.resetDays()
-                } else {
-                    fish.day--
-                }
-            }
-            println("for-loop finished: ${System.currentTimeMillis() - startTimeDay} ms")
-
-            mutableFishes = mutableFishesWithNewBorns
-            println("after $i days: ${mutableFishes.size} fishes")
-            //println("$mutableFishes")
+    /**
+     * My own solution was way to inperformant for task 2 (heap space problem). So I looked over
+     * at reddit, and of course... so many smart solutions. I grabbed this one:
+     * https://www.reddit.com/r/adventofcode/comments/r9z49j/comment/hngygcy
+     *
+     * Man. So cool.
+     *
+     * I added some inline comments trying to explain (and understand for myself :)) what's going
+     * on.
+     *
+     */
+    fun simulate(input: List<Int>, days: Int): Long {
+        // create the initial variants of the days (hence the list size of 9: we have days from 0
+        // to 8)
+        var dayVariants = MutableList(9) { index ->
+            input.count { it == index }.toLong()
         }
 
-        println("Total time: ${System.currentTimeMillis() - startTimeTotal} ms")
 
-        return mutableFishes.size
+        repeat(days) {
+            // get the count of fishes whose days are 0
+            val fishAtZero = dayVariants.first()
+
+            // now, rotating begins. "day 8" becomes "day 7", "day 7" becomes "day 6" and so on.
+            // therefore, we remove the first element of the list. "day 1" becomes "day 0". "day
+            // 8" is missing, but will be added in a moment
+            dayVariants = dayVariants.drop(1).toMutableList()
+
+            // the fishes with zero now reset their days to "6", hence the value at index 6 in
+            // the list has to increase
+            dayVariants[6] = dayVariants[6] + fishAtZero
+
+            // the newborn fishes with 8 days are appended to the end of the list
+            dayVariants.add(fishAtZero)
+        }
+
+        return dayVariants.sum()
     }
 }
