@@ -8,17 +8,15 @@ class BingoBoard(private val cols: Int, private val rows: Int) {
             throw IllegalArgumentException("too much numbers for the board!")
         }
 
-        println("adding numbers: $intList")
         for (int in intList) {
             numbers.add(BingoNumber(int))
         }
-
-        println("board now contains ${numbers.size} numbers")
     }
 
     fun markNumber(numberToMark: Int) {
-        val toList = numbers.firstOrNull { number -> number.number == numberToMark }
-        if (toList != null) toList.marked = true
+        val maybeNumber = numbers
+            .firstOrNull { number -> number.number == numberToMark }
+        if (maybeNumber != null) maybeNumber.marked = true
     }
 
     fun hasBingo(): Boolean {
@@ -28,13 +26,19 @@ class BingoBoard(private val cols: Int, private val rows: Int) {
         // 15 16 17 18 19
         // 20 21 22 23 24
 
+        if (numbers.size != cols * rows) {
+            throw IllegalStateException("numbers size (${numbers.size}) not matching for the " +
+                    "board ($cols * $rows)")
+        }
+
+
         // rows
         for (i in 0 until numbers.size step cols) {
             val subList = numbers.subList(i, i + cols)
             //println("checking row $subList")
             val size = subList.filter { !it.marked }.size
             if (size == 0) {
-                println("List has Bingo! $subList")
+                println("Board has Bingo (row)! $subList")
                 return true
             }
         }
@@ -42,16 +46,15 @@ class BingoBoard(private val cols: Int, private val rows: Int) {
         // cols
         for (i in 0 until cols) {
             val subList = mutableListOf<BingoNumber>()
-            for (j in 0 until cols * rows step cols) {
+            for (j in i until cols * rows step cols) {
                 subList.add(numbers[j])
             }
             val size = subList.filter { !it.marked }.size
             if (size == 0) {
-                println("List has Bingo! $subList")
+                println("Board has Bingo (col)! $subList")
                 return true
             }
         }
-
 
         return false
     }
@@ -64,9 +67,10 @@ class BingoBoard(private val cols: Int, private val rows: Int) {
         return numbers.filter { numbers -> numbers.marked }.size
     }
 
+    @Suppress("unused")
     fun printBoard() {
         if (numbers.size < (cols * rows)) {
-            println("Not enough numbers yes (${numbers.size})")
+            println("Not enough numbers yet (${numbers.size})")
             return
         }
 
