@@ -43,11 +43,14 @@ class Day08 {
                 .filter { entry -> entry.key in 2..4 || entry.key == 7 }
                 .toMap()
                 .values.sum()
-            println("sum for lengthes 2, 3, 4, 7: $sum")
 
             sumForTask += sum
         }
 
         return sumForTask
+    }
+
+    fun calcTask2(input: List<String>): Int {
+        TODO("Not yet implemented")
     }
 }

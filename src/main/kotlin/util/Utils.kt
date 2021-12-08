@@ -5,7 +5,10 @@ import java.io.File
 class Utils {
 
     fun readFileAsStringList(fileName: String): List<String> =
-        File("src/main/resources/$fileName").bufferedReader().readLines()
+        File(ClassLoader.getSystemResource(fileName).file)
+            .readText()
+            .split("\n")
+            .filter { it.isNotBlank() }
 
     fun readFileAsIntListLineBreaks(fileName: String): List<Int> =
         File("src/main/resources/$fileName").bufferedReader().readLines().map { it.toInt() }
